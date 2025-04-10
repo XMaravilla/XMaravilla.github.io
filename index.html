@@ -4,17 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Taking App</title>
+    <style>
+        body{
+            background-image: url('./unsplash.jpg');
+            background-position: center;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            font-family:Arial, Helvetica, sans-serif;
+            background-color:aquamarine;
+            display: felx;
+            justify-content: center;
+            align-items: center;
+        }
+        h1{font-size: 3.0rem;
+        color:#BE4CE4;
+    }
+    #quiz-container{
+        background-color:#ffffff4B;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        border-radius:10px;
+    }
+    </style>
 
 </head>
 <body>
     <div class="quiz-container">
-        <h1>Quiz</h1>  
+        <h1>Quiz</h1>     
         <div class="timer">Time Remaining: 15 seconds</div>
     <div id="question-container"></div>
     <div id="option-container"></div>
-    <div id="score-containter">Score: <span id=:"score">0</span></div>
-    
+    <div id="score-container">Score: <span id=:"score">0</span></div>
+    <div id="result-container"></div>
+    <button type="button" id="next-btn">Next Question</button>
+
     </div>
-    <script src="main.js"></script>
+    script src="main.js"></script>
 </body>
 </html>
