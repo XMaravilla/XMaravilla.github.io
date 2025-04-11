@@ -80,7 +80,7 @@
 
     .final-score {
       font-size: 1.4rem;
-      color: rgba(255, 255, 255, 1);
+      color: rgba(240, 128, 128, 1);
       margin: 10px 0;
     }
   </style>
@@ -88,7 +88,12 @@
 <body>
   <div id="app-container"></div>
 
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
   <script>
     const quizData = [
       {
@@ -224,10 +229,14 @@
     function showResultScreen() {
       $('#app-container').html(`
         <h2>Quiz Completed!</h2>
-        <p class="final-score">Your final score is: ${score}</p>
+        <p class="final-score">Your final score is: ${score} / ${quizData.length}</p>
         <button id="retake-btn">Retake Quiz</button>
         <button id="home-btn">Home</button>
       `);
+
+      if (score === quizData.length) {
+        launchConfetti();
+      }
 
       $('#retake-btn').click(() => {
         currentQuestion = 0;
@@ -241,7 +250,31 @@
       });
     }
 
-    // Start with home screen
+    function launchConfetti() {
+      const duration = 3 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    // Show home screen on load
     $(document).ready(() => {
       showHomeScreen();
     });
