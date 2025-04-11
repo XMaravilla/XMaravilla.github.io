@@ -104,7 +104,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <script>
-    const quizData = [
+    let quizData = [
       {
         question: "What day comes after Thursday?",
         options: ["Monday", "Tuesday", "Friday", "Sunday"],
@@ -136,18 +136,25 @@
     let score = 0;
     let timer;
     let timeLeft = 15;
+    let customQuizData = [];
 
     function showHomeScreen() {
       $('#app-container').html(`
         <h1>Welcome to the Quiz!</h1>
-        <button id="start-btn">Start Quiz</button>
+        <button id="start-btn">Start Practice Quiz</button>
+        <button id="create-quiz-btn">Create Your Own Quiz</button>
       `);
 
       $('#start-btn').click(() => {
         currentQuestion = 0;
         score = 0;
+        quizData = [...quizData]; // Reset to original practice quiz
         showQuizUI();
         showQuestion();
+      });
+
+      $('#create-quiz-btn').click(() => {
+        createCustomQuiz();
       });
     }
 
@@ -281,6 +288,62 @@
           requestAnimationFrame(frame);
         }
       })();
+    }
+
+    function createCustomQuiz() {
+      $('#app-container').html(`
+        <h1>Create Your Quiz</h1>
+        <input type="text" id="quiz-title" placeholder="Enter Quiz Title" />
+        <textarea id="question" placeholder="Enter question"></textarea>
+        <input type="text" id="option1" placeholder="Option 1" />
+        <input type="text" id="option2" placeholder="Option 2" />
+        <input type="text" id="option3" placeholder="Option 3" />
+        <input type="text" id="option4" placeholder="Option 4" />
+        <input type="text" id="correct-answer" placeholder="Correct Answer" />
+        <button id="add-question-btn">Add Question</button>
+        <button id="finish-quiz-btn">Finish Quiz</button>
+      `);
+
+      $('#add-question-btn').click(() => {
+        const questionText = $('#question').val();
+        const options = [
+          $('#option1').val(),
+          $('#option2').val(),
+          $('#option3').val(),
+          $('#option4').val()
+        ];
+        const correctAnswer = $('#correct-answer').val();
+
+        if (questionText && options.every(opt => opt) && correctAnswer) {
+          customQuizData.push({
+            question: questionText,
+            options: options,
+            correctAnswer: correctAnswer
+          });
+
+          alert("Question added!");
+          $('#question').val('');
+          $('#option1').val('');
+          $('#option2').val('');
+          $('#option3').val('');
+          $('#option4').val('');
+          $('#correct-answer').val('');
+        } else {
+          alert("Please fill in all fields.");
+        }
+      });
+
+      $('#finish-quiz-btn').click(() => {
+        if (customQuizData.length > 0) {
+          quizData = customQuizData; // Use the user's custom quiz
+          currentQuestion = 0;
+          score = 0;
+          showQuizUI();
+          showQuestion();
+        } else {
+          alert("Please add at least one question.");
+        }
+      });
     }
 
     $(document).ready(() => {
