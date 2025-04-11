@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Taking App</title>  /*name*/
+    <title>Quiz Taking App</title>
     <style>
         body{
             background-image: url('unsplash.jpg');  /*background image*/
@@ -26,7 +26,7 @@
         border-radius:10px;
         padding: 20px;
         max-width: 500px;
-        width:100%;
+        width: 100%;
         text-align: center;
     }          
         #question-container{
@@ -43,7 +43,7 @@
             padding: 10px;
             margin: 10px 0;
             background-color: #3498db;
-            color: #1111;
+            color: #FFFFFF;
             border: none;
             border-radius: 5px;
             cursor: pointer;  
@@ -68,10 +68,10 @@
             text-align: center;
             cursor: pointer;
             font-size: 1rem;
-            color: #1111;  /*color of next text*/
+            color: #FFFFFF;  /*color of next text*/
             transition: background-color 0.3s ease-in-out;
         }
-        #next-btn hover{
+        #next-btn:hover{
             background-color: #FF4517; /*next button hover style color*/
         }
         .final-score{
@@ -92,14 +92,81 @@
     <div id="question-container"></div>
     <div id="option-container"></div>
     <div id="score-container">Score: <span id=:"score">0</span></div>
-    <div id="result-container"></div>
+    <div id="result-container">Result...</div>
     <button type="button" id="next-btn">Next Question</button>
-
     </div>
 </body>
     <script src="http//code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
-        /*set some data -- Questions, Answers to show in out App*/
-        const quizData=[]; /*add questions in it*/
+        const quizData=[{
+           question: "What day comes after Thursday? ",
+            options: ["Monday","Tuesday","Friday","Sunday"],
+            correctAnswer:"Friday"
+            /*add questions*/
+        }]; 
+        
+        let currentQuestion=0;
+        let score=0;
+        function shuffleArray(array){
+            const shuffleArray=Array.slice();
+            for(let i=shuffleArray.length-1;i>0;i--){
+                const j=math.floor(math.random()*(i+1));
+        [shuffleArray[i],shuffle[j]]=[shuffleArray[j],shuffleArray[i]];  /*feed and swap random value*/
+            }
+            return shuffleArray;
+        }
+        function showQuestion(){
+            const questionContainer=$('#question-container');
+            const optionContainer=$('#option-container');
+            const nextBtn=$('#next=btn');
+
+            questionContainer.text(quizData[currentQuestion].question);
+            optioncontainer.empty();
+            shuffleArray(quizData[currentQuestion].options).forEach((option,index_=>{
+                const optionBtn=$('<button>')
+                .text(option)
+                .addClass('option')
+                .click(()=>{
+                    checkAnswer(option);
+                    $('.option').prop("dissable"),true);
+                });
+                optionContainer.append(optionBtn);
+                    });
+            nextBtn.hide();
+        }
+        funciton checkAnswer(selectedAnswer){
+            const correctAnswer=quizData[currentQuestion].correctAnswer;
+            const resultContainer=$('#result-container');
+            const scoreContainer=$('#score');
+            const nextBtn=$('#next-btn');
+
+            if(selectAnswer===corectAnswer){;
+            resultContainer.text("Correct!");
+            score ++;
+             }else{
+                resultContainer.text("incorrect. The correct answer is: "+correctAnswer);
+            }
+            scoreContainer.text(score);
+            resultContainer.show();
+            nextBtn.show();
+        }
+        fucntion nextQuestion(){
+            const resultContainer=$('#result-container');
+            resultContainer.hide();
+
+            if(currentQuestion<quizData.length-1){
+                currentQuestion++;
+                showQuestion();
+            }else{
+                $('#quiz-contaianer').html("<h2>Quiz Completed!</h2> <p class='final-score')>Your final score is: "+ score +"</p>);
+
+        $(document).ready((=>){
+            showQuestion();
+
+            $('#next-btn').click(()=>{
+                nextQuestion();
+            });
+        })
+                
     </script>
 </html>
