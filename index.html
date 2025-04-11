@@ -23,7 +23,6 @@
       text-align: center;
       margin-top: 20px;
       margin-bottom: 10px;
-      font-family: 'Arial', sans-serif;
     }
 
     #app-container {
@@ -79,7 +78,8 @@
       cursor: not-allowed;
     }
 
-    #result-container, #score-container {
+    #result-container,
+    #score-container {
       margin-top: 15px;
       font-weight: bold;
     }
@@ -100,10 +100,7 @@
   <div id="title-bar">QuizMe</div>
   <div id="app-container"></div>
 
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <script>
@@ -263,7 +260,7 @@
     }
 
     function launchConfetti() {
-      const duration = 3 * 1000;
+      const duration = 3000;
       const end = Date.now() + duration;
 
       (function frame() {
