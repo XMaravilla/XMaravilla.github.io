@@ -1,3 +1,95 @@
+Tac0sALaPlancha_15
+tac0salaplancha_15
+Invisible
+
+
+
+Text Channel
+Tac0sALaPlancha_15's server:general
+Search
+
+general chat
+Welcome to
+
+Tac0sALaPlancha_15's server
+
+This is your brand new, shiny server. Here are some steps to help you get started. For more, check out our Getting Started guide.
+
+Invite your friends
+
+Personalize your server with an icon
+
+Send your first message
+
+Add your first app
+April 8, 2025
+
+Tac0sALaPlancha_15 — 4/8/2025 8:34 PM
+
+April 9, 2025
+
+Tac0sALaPlancha_15 — 4/9/2025 12:36 PM
+
+April 10, 2025
+
+Tac0sALaPlancha_15 — Yesterday at 5:36 PM
+
+
+Tac0sALaPlancha_15 — Yesterday at 9:47 PM
+https://xmaravilla.github.io/
+April 11, 2025
+
+Tac0sALaPlancha_15 — 3:08 PM
+
+NEW
+
+Tac0sALaPlancha_15 — 3:44 PM
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Quiz Taking App</title>
+Expand
+message.txt
+8 KB
+NEW
+
+Tac0sALaPlancha_15 — 4:21 PM
+official work (edited)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+Expand
+message.txt
+7 KB
+NEW
+[4:24 PM]
+shortened version (edited)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+Expand
+message.txt
+8 KB
+NEW
+
+
+Message #general
+﻿
+
+
+
+
+
+to select
+;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +115,7 @@
       text-align: center;
       margin-top: 20px;
       margin-bottom: 10px;
+      font-family: 'Arial', sans-serif;
     }
 
     #app-container {
@@ -78,8 +171,7 @@
       cursor: not-allowed;
     }
 
-    #result-container,
-    #score-container {
+    #result-container, #score-container {
       margin-top: 15px;
       font-weight: bold;
     }
@@ -97,14 +189,17 @@
   </style>
 </head>
 <body>
-  <div id="title-bar">QuizMe</div>
+  <div id="title-bar">QuizME!</div>
   <div id="app-container"></div>
 
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <script>
-    let quizData = [
+    const quizData = [
       {
         question: "What day comes after Thursday?",
         options: ["Monday", "Tuesday", "Friday", "Sunday"],
@@ -136,25 +231,18 @@
     let score = 0;
     let timer;
     let timeLeft = 15;
-    let customQuizData = [];
 
     function showHomeScreen() {
       $('#app-container').html(`
         <h1>Welcome to the Quiz!</h1>
-        <button id="start-btn">Start Practice Quiz</button>
-        <button id="create-quiz-btn">Create Your Own Quiz</button>
+        <button id="start-btn">Start Quiz</button>
       `);
 
       $('#start-btn').click(() => {
         currentQuestion = 0;
         score = 0;
-        quizData = [...quizData]; // Reset to original practice quiz
         showQuizUI();
         showQuestion();
-      });
-
-      $('#create-quiz-btn').click(() => {
-        createCustomQuiz();
       });
     }
 
@@ -267,7 +355,7 @@
     }
 
     function launchConfetti() {
-      const duration = 3000;
+      const duration = 3 * 1000;
       const end = Date.now() + duration;
 
       (function frame() {
@@ -288,62 +376,6 @@
           requestAnimationFrame(frame);
         }
       })();
-    }
-
-    function createCustomQuiz() {
-      $('#app-container').html(`
-        <h1>Create Your Quiz</h1>
-        <input type="text" id="quiz-title" placeholder="Enter Quiz Title" />
-        <textarea id="question" placeholder="Enter question"></textarea>
-        <input type="text" id="option1" placeholder="Option 1" />
-        <input type="text" id="option2" placeholder="Option 2" />
-        <input type="text" id="option3" placeholder="Option 3" />
-        <input type="text" id="option4" placeholder="Option 4" />
-        <input type="text" id="correct-answer" placeholder="Correct Answer" />
-        <button id="add-question-btn">Add Question</button>
-        <button id="finish-quiz-btn">Finish Quiz</button>
-      `);
-
-      $('#add-question-btn').click(() => {
-        const questionText = $('#question').val();
-        const options = [
-          $('#option1').val(),
-          $('#option2').val(),
-          $('#option3').val(),
-          $('#option4').val()
-        ];
-        const correctAnswer = $('#correct-answer').val();
-
-        if (questionText && options.every(opt => opt) && correctAnswer) {
-          customQuizData.push({
-            question: questionText,
-            options: options,
-            correctAnswer: correctAnswer
-          });
-
-          alert("Question added!");
-          $('#question').val('');
-          $('#option1').val('');
-          $('#option2').val('');
-          $('#option3').val('');
-          $('#option4').val('');
-          $('#correct-answer').val('');
-        } else {
-          alert("Please fill in all fields.");
-        }
-      });
-
-      $('#finish-quiz-btn').click(() => {
-        if (customQuizData.length > 0) {
-          quizData = customQuizData; // Use the user's custom quiz
-          currentQuestion = 0;
-          score = 0;
-          showQuizUI();
-          showQuestion();
-        } else {
-          alert("Please add at least one question.");
-        }
-      });
     }
 
     $(document).ready(() => {
