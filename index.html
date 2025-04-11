@@ -6,7 +6,7 @@
      <title>Quiz Taking App</title>
      <style>
          body{
-             /*background-image: url('unsplash.jpg');  /*background image*/
+             /*background-image: url('unsplash.jpg'); */ /*background image*/
              background-position: center;
              background-size: cover;
              height: 100vh;
@@ -56,7 +56,7 @@
             #result-container{
              font-size:20px;
              font-weight: bold;
-             color: #27AE60;
+             color: #1ac514;
              padding: 10px 20px;
             }
          #next-btn{
@@ -76,7 +76,7 @@
          }
          .final-score{
              font-size: 1.4rem;
-             color: rgba(240, 128, 128, 1);
+             color: rgb(255, 255, 255);
              transition: font-size 0.3s ease-in-out;
          }
          .final-score:hover{font-size: 2.2rem;}            
@@ -92,6 +92,7 @@
             <div id="result-container">Result...</div>
             <button type="button" id="next-btn">Next Question</button>
             </div>
+            
     </body>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script>
@@ -127,6 +128,26 @@
         [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];  /*feed and swap random value*/
             }
             return shuffled;
+        }
+        function startTimer(){
+            timerLeft = 15;
+            $('#timer').text('Time Remaining: ${timeLeft} seconds');
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                $('#timer').text('Time Remaining: ${timeLeft}seconds');
+                if('timeLeft <= 0'){
+                    clearInterval(timer);
+                    showCorrectAnswer();
+                
+                }
+            }, 1000);
+        }
+        function showCorrectAnswer(){
+            const correctAnswer = quizData[currentQuestion].correctAnswer;
+            $('#result-container').text("Time's Up! Correct Answer is: " + correctAnswer).show();
+            $('option').prop('disabled', true);
+            $('#next-btn').show();
         }
         function showQuestion(){
             const questionContainer=$('#question-container');
