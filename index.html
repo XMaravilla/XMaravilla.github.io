@@ -107,7 +107,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <script>
-    const practiceQuizData = [
+    const quizData = [
       {
         question: "What day comes after Thursday?",
         options: ["Monday", "Tuesday", "Friday", "Sunday"],
@@ -139,79 +139,22 @@
     let score = 0;
     let timer;
     let timeLeft = 15;
-    let customQuizData = [];
 
     function showHomeScreen() {
       $('#app-container').html(`
         <h1>Welcome to the Quiz!</h1>
-        <div>
-          <label for="quizSelection">Choose a Quiz:</label>
-          <select id="quizSelection">
-            <option value="practiceQuiz">Practice Quiz</option>
-            <option value="customQuiz">Custom Quiz</option>
-          </select>
-        </div>
-        <div id="customQuizForm" style="display: none;">
-          <h2>Create Your Own Quiz</h2>
-          <form id="quiz-form">
-            <input type="text" id="question" placeholder="Question" required /><br/>
-            <input type="text" id="option1" placeholder="Option 1" required />
-            <input type="text" id="option2" placeholder="Option 2" required /><br/>
-            <input type="text" id="option3" placeholder="Option 3" required />
-            <input type="text" id="option4" placeholder="Option 4" required /><br/>
-            <input type="text" id="correctAnswer" placeholder="Correct Answer" required /><br/>
-            <button type="submit">Add Question</button>
-          </form>
-        </div>
         <button id="start-btn">Start Quiz</button>
       `);
-
-      $('#quizSelection').change(() => {
-        const selectedQuiz = $('#quizSelection').val();
-        if (selectedQuiz === "customQuiz") {
-          $('#customQuizForm').show();
-        } else {
-          $('#customQuizForm').hide();
-        }
-      });
-
-      $('#quiz-form').submit((e) => {
-        e.preventDefault();
-        const question = $('#question').val();
-        const options = [
-          $('#option1').val(),
-          $('#option2').val(),
-          $('#option3').val(),
-          $('#option4').val(),
-        ];
-        const correctAnswer = $('#correctAnswer').val();
-
-        customQuizData.push({ question, options, correctAnswer });
-
-        $('#question').val('');
-        $('#option1').val('');
-        $('#option2').val('');
-        $('#option3').val('');
-        $('#option4').val('');
-        $('#correctAnswer').val('');
-
-        alert("Question Added!");
-      });
 
       $('#start-btn').click(() => {
         currentQuestion = 0;
         score = 0;
-        const selectedQuiz = $('#quizSelection').val();
-        if (selectedQuiz === "practiceQuiz") {
-          showQuizUI(practiceQuizData);
-        } else {
-          showQuizUI(customQuizData);
-        }
+        showQuizUI();
         showQuestion();
       });
     }
 
-    function showQuizUI(quizData) {
+    function showQuizUI() {
       $('#app-container').html(`
         <h1>Quiz</h1>
         <div id="timer">Time Remaining: 15 seconds</div>
@@ -223,7 +166,7 @@
       `);
 
       $('#next-btn').click(() => {
-        nextQuestion(quizData);
+        nextQuestion();
       });
     }
 
@@ -242,14 +185,13 @@
     }
 
     function showCorrectAnswer() {
-      const correct = practiceQuizData[currentQuestion].correctAnswer;
+      const correct = quizData[currentQuestion].correctAnswer;
       $('#result-container').text("Time's up! Correct answer: " + correct).show();
       $('.option').prop("disabled", true);
       $('#next-btn').show();
     }
 
     function showQuestion() {
-      const quizData = $('#quizSelection').val() === "practiceQuiz" ? practiceQuizData : customQuizData;
       const qData = quizData[currentQuestion];
       $('#question-container').text(qData.question);
       $('#option-container').empty();
@@ -263,7 +205,7 @@
           .text(opt)
           .click(() => {
             clearInterval(timer);
-            checkAnswer(opt, quizData);
+            checkAnswer(opt);
             $('.option').prop("disabled", true);
           });
         $('#option-container').append(btn);
@@ -272,7 +214,7 @@
       startTimer();
     }
 
-    function checkAnswer(selected, quizData) {
+    function checkAnswer(selected) {
       const correct = quizData[currentQuestion].correctAnswer;
       if (selected === correct) {
         $('#result-container').text("Correct!");
@@ -286,7 +228,7 @@
       $('#next-btn').show();
     }
 
-    function nextQuestion(quizData) {
+    function nextQuestion() {
       clearInterval(timer);
       if (currentQuestion < quizData.length - 1) {
         currentQuestion++;
@@ -299,21 +241,49 @@
     function showResultScreen() {
       $('#app-container').html(`
         <h2>Quiz Completed!</h2>
-        <p class="final-score">Your final score is: ${score}</p>
+        <p class="final-score">Your final score is: ${score} / ${quizData.length}</p>
         <button id="retake-btn">Retake Quiz</button>
         <button id="home-btn">Home</button>
       `);
 
+      if (score === quizData.length) {
+        launchConfetti();
+      }
+
       $('#retake-btn').click(() => {
         currentQuestion = 0;
         score = 0;
-        showQuizUI(practiceQuizData);
+        showQuizUI();
         showQuestion();
       });
 
       $('#home-btn').click(() => {
         showHomeScreen();
       });
+    }
+
+    function launchConfetti() {
+      const duration = 3 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
     }
 
     $(document).ready(() => {
