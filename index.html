@@ -112,9 +112,9 @@
         options: ["Mars","Earth","Venus","Moon"],
         correctAnswer: "Earth"},
 
-        {question: "What is the square root of 5?",
-        options: ["32","10","55","25"],
-        correctAnswer:"25"},            
+        {question: "What is the square root of 25?",
+        options: ["32","10","55","5"],
+        correctAnswer:"5"},            
             /*add questions*/
         ]; 
         
@@ -141,7 +141,7 @@
                 .addClass('option')
                 .click(()=>{
                     checkAnswer(option);
-                    $('.option').prop("disable",true);
+                    $('.option').prop("disabled",true);
                 });
                 optionContainer.append(optionBtn);
                     });
@@ -153,7 +153,7 @@
             const scoreContainer=$('#score');
             const nextBtn=$('#next-btn');
 
-            if(selecedtAnswer===correctAnswer){;
+            if(selectedAnswer===correctAnswer){;
             resultContainer.text("Correct!");
             score ++;
              }else{
