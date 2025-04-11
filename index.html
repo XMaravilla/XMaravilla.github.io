@@ -6,7 +6,7 @@
      <title>Quiz Taking App</title>
      <style>
          body{
-             background-image: url('unsplash.jpg');  /*background image*/
+             /*background-image: url('unsplash.jpg');  /*background image*/
              background-position: center;
              background-size: cover;
              height: 100vh;
@@ -52,18 +52,18 @@
             }
             .option:hover{background-color: #2980b9;} 
             #score-container{font-weight: bold; 
-                margin-bottom: 20xp;}
+                margin-bottom: 20px;}
             #result-container{
-             font-size:20xp;
+             font-size:20px;
              font-weight: bold;
              color: #27AE60;
-             padding: 10px 20xp;
+             padding: 10px 20px;
             }
          #next-btn{
              width:30%;
              padding:10px 20px;
              border: none;
-             border-radius: 10xp;
+             border-radius: 10px;
              background-color: #FF5B32;
              text-align: center;
              cursor: pointer;
@@ -93,7 +93,7 @@
             <button type="button" id="next-btn">Next Question</button>
             </div>
     </body>
-        <script src="http//code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script>
         const quizData=[{
         question: "What day comes after Thursday? ",
@@ -121,27 +121,27 @@
         let currentQuestion=0;
         let score=0;
         function shuffleArray(array){
-            const shuffleArray=Array.slice();
-            for(let i=shuffleArray.length-1;i>0;i--){
-                const j=math.floor(math.random()*(i+1));
-        [shuffleArray[i],shuffle[j]]=[shuffleArray[j],shuffleArray[i]];  /*feed and swap random value*/
+            const shuffled=array.slice();
+            for(let i=shuffled.length-1;i>0;i--){
+                const j = Math.floor(Math.random()*(i+1));
+        [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];  /*feed and swap random value*/
             }
-            return shuffleArray;
+            return shuffled;
         }
         function showQuestion(){
             const questionContainer=$('#question-container');
             const optionContainer=$('#option-container');
-            const nextBtn=$('#next=btn');
+            const nextBtn=$('#next-btn');
 
             questionContainer.text(quizData[currentQuestion].question);
-            optioncontainer.empty();
+            optionContainer.empty();
             shuffleArray(quizData[currentQuestion].options).forEach((option,index)=>{
                 const optionBtn=$('<button>')
                 .text(option)
                 .addClass('option')
                 .click(()=>{
                     checkAnswer(option);
-                    $('.option').prop("dissable",true);
+                    $('.option').prop("disable",true);
                 });
                 optionContainer.append(optionBtn);
                     });
@@ -153,7 +153,7 @@
             const scoreContainer=$('#score');
             const nextBtn=$('#next-btn');
 
-            if(selectAnswer===corectAnswer){;
+            if(selecedtAnswer===correctAnswer){;
             resultContainer.text("Correct!");
             score ++;
              }else{
@@ -171,7 +171,7 @@
                 currentQuestion++;
                 showQuestion();
             }else{
-                $('#quiz-container').html("<h2>Quiz Completed!</h2> <p class='final-score')>Your final score is: "+ score +"</p>");
+                $('#quiz-container').html("<h2>Quiz Completed!</h2> <p class='final-score'>Your final score is: "+ score +"</p>");
               }
             }
             $(document).ready(()=>{
