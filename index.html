@@ -13,6 +13,17 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      flex-direction: column;
+    }
+
+    #title-bar {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #4A1C6F;
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-family: 'Arial', sans-serif;
     }
 
     #app-container {
@@ -86,6 +97,7 @@
   </style>
 </head>
 <body>
+  <div id="title-bar">QuizMe</div>
   <div id="app-container"></div>
 
   <!-- jQuery -->
@@ -274,7 +286,6 @@
       })();
     }
 
-    // Show home screen on load
     $(document).ready(() => {
       showHomeScreen();
     });
