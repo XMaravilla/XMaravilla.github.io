@@ -1,207 +1,245 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Quiz Taking App</title>
-     <style>
-         body{
-             /*background-image: url('unsplash.jpg'); */ /*background image*/
-             background-position: center;
-             background-size: cover;
-             height: 100vh;
-             margin: 0;
-             font-family:Arial, Helvetica, sans-serif;
-             background-color:#EBBDFF;
-             display: flex;
-             justify-content: center;
-             align-items: center;
-         }
-         h1{font-size: 3.5rem;
-         color:#793391;
-     }
-         #quiz-container{
-             background-color:#4489C14B;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            border-radius:10px;
-             padding: 20px;
-             max-width: 500px;
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Taking App</title>
+    <style>
+        body {
+            background-position: center;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #EBBDFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: #793391;
+        }
+
+        #quiz-container {
+            background-color: rgba(68, 137, 193, 0.3);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
-         }          
-            #question-container{
-              margin-bottom: 20px;
-              font-size: 1.8rem;
-              font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-          }
-          #option-container{
-             padding: 25px;
-           }
-           .option{
-                display: block;
-                width: 100%;
-                padding: 10px;
-                margin: 10px 0;
-                background-color: #3498db;
-                color: #FFFFFF;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;  
-                font-size: 1.2rem;
-                transition: background-color 0.3s ease-in-out;
-            }
-            .option:hover{background-color: #2980b9;} 
-            #score-container{font-weight: bold; 
-                margin-bottom: 20px;}
-            #result-container{
-             font-size:20px;
-             font-weight: bold;
-             color: #1ac514;
-             padding: 10px 20px;
-            }
-         #next-btn{
-             width:30%;
-             padding:10px 20px;
-             border: none;
-             border-radius: 10px;
-             background-color: #FF5B32;
-             text-align: center;
-             cursor: pointer;
-             font-size: 1rem;
-             color: #FFFFFF;  /*color of next text*/
-             transition: background-color 0.3s ease-in-out;
-         }
-         #next-btn:hover{
-             background-color: #FF4517; /*next button hover style color*/
-         }
-         .final-score{
-             font-size: 1.4rem;
-             color: rgb(255, 255, 255);
-             transition: font-size 0.3s ease-in-out;
-         }
-         .final-score:hover{font-size: 2.2rem;}            
-     </style>
- </head>
-        <body>
-        <div id="quiz-container">
-            <h1>Quiz</h1>     
-            <div id="timer">Time Remaining: 15 seconds</div>
-            <div id="question-container"></div>
-            <div id="option-container"></div>
-            <div id="score-container">Score: <span id="score">0</span></div>
-            <div id="result-container">Result...</div>
-            <button type="button" id="next-btn">Next Question</button>
-            </div>
-            
-    </body>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script>
-        const quizData=[{
-        question: "What day comes after Thursday? ",
-        options: ["Monday","Tuesday","Friday","Sunday"],
-        correctAnswer:"Friday"},
-            
-        {question: "What is 2+8?",
-        options:["5","7","12","10"],
-        correctAnswer:"10",},
-       
-        {question: "What color is the sun?",
-        options: ["Yellow","Red","Green","Purple"],
-        correctAnswer:"Yellow"},
-        
-        {question: "Where are you?",
-        options: ["Mars","Earth","Venus","Moon"],
-        correctAnswer: "Earth"},
+        }
 
-        {question: "What is the square root of 25?",
-        options: ["32","10","55","5"],
-        correctAnswer:"5"},            
-            /*add questions*/
-        ]; 
-        
-        let currentQuestion=0;
-        let score=0;
-        function shuffleArray(array){
-            const shuffled=array.slice();
-            for(let i=shuffled.length-1;i>0;i--){
-                const j = Math.floor(Math.random()*(i+1));
-        [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];  /*feed and swap random value*/
+        #question-container {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+        }
+
+        #option-container {
+            padding: 25px;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #3498db;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .option:hover {
+            background-color: #2980b9;
+        }
+
+        .option:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #score-container {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        #result-container {
+            font-size: 20px;
+            font-weight: bold;
+            color: #27AE60;
+            padding: 10px 20px;
+        }
+
+        #next-btn {
+            width: 30%;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #FF5B32;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #FFFFFF;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #next-btn:hover {
+            background-color: #FF4517;
+        }
+
+        .final-score {
+            font-size: 1.4rem;
+            color: rgba(240, 128, 128, 1);
+            transition: font-size 0.3s ease-in-out;
+        }
+
+        .final-score:hover {
+            font-size: 2.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Quiz</h1>
+        <div id="timer">Time Remaining: 15 seconds</div>
+        <div id="question-container"></div>
+        <div id="option-container"></div>
+        <div id="score-container">Score: <span id="score">0</span></div>
+        <div id="result-container">Result...</div>
+        <button type="button" id="next-btn">Next Question</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        const quizData = [
+            {
+                question: "What day comes after Thursday?",
+                options: ["Monday", "Tuesday", "Friday", "Sunday"],
+                correctAnswer: "Friday"
+            },
+            {
+                question: "What is 2+8?",
+                options: ["5", "7", "12", "10"],
+                correctAnswer: "10"
+            },
+            {
+                question: "What color is the sun?",
+                options: ["Yellow", "Red", "Green", "Purple"],
+                correctAnswer: "Yellow"
+            },
+            {
+                question: "Where are you?",
+                options: ["Mars", "Earth", "Venus", "Moon"],
+                correctAnswer: "Earth"
+            },
+            {
+                question: "What is the square root of 25?",
+                options: ["32", "10", "55", "5"],
+                correctAnswer: "5"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 15;
+
+        function shuffleArray(array) {
+            const shuffled = array.slice();
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
             return shuffled;
         }
-        function startTimer(){
-            timerLeft = 15;
-            $('#timer').text('Time Remaining: ${timeLeft} seconds');
+
+        function startTimer() {
+            timeLeft = 15;
+            $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
             clearInterval(timer);
             timer = setInterval(() => {
                 timeLeft--;
-                $('#timer').text('Time Remaining: ${timeLeft}seconds');
-                if('timeLeft <= 0'){
+                $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
+                if (timeLeft <= 0) {
                     clearInterval(timer);
                     showCorrectAnswer();
-                
                 }
             }, 1000);
         }
-        function showCorrectAnswer(){
+
+        function showCorrectAnswer() {
             const correctAnswer = quizData[currentQuestion].correctAnswer;
-            $('#result-container').text("Time's Up! Correct Answer is: " + correctAnswer).show();
-            $('option').prop('disabled', true);
+            $('#result-container').text("Time's up! Correct answer: " + correctAnswer).show();
+            $('.option').prop("disabled", true);
             $('#next-btn').show();
         }
-        function showQuestion(){
-            const questionContainer=$('#question-container');
-            const optionContainer=$('#option-container');
-            const nextBtn=$('#next-btn');
+
+        function showQuestion() {
+            const questionContainer = $('#question-container');
+            const optionContainer = $('#option-container');
+            const nextBtn = $('#next-btn');
 
             questionContainer.text(quizData[currentQuestion].question);
             optionContainer.empty();
-            shuffleArray(quizData[currentQuestion].options).forEach((option,index)=>{
-                const optionBtn=$('<button>')
-                .text(option)
-                .addClass('option')
-                .click(()=>{
-                    checkAnswer(option);
-                    $('.option').prop("disabled",true);
-                });
-                optionContainer.append(optionBtn);
+            shuffleArray(quizData[currentQuestion].options).forEach(option => {
+                const optionBtn = $('<button>')
+                    .text(option)
+                    .addClass('option')
+                    .click(() => {
+                        clearInterval(timer);
+                        checkAnswer(option);
+                        $('.option').prop("disabled", true);
                     });
-            nextBtn.hide();
-        }
-        function checkAnswer(selectedAnswer){
-            const correctAnswer=quizData[currentQuestion].correctAnswer;
-            const resultContainer=$('#result-container');
-            const scoreContainer=$('#score');
-            const nextBtn=$('#next-btn');
+                optionContainer.append(optionBtn);
+            });
 
-            if(selectedAnswer===correctAnswer){;
-            resultContainer.text("Correct!");
-            score ++;
-             }else{
-                resultContainer.text("incorrect. The correct answer is: "+correctAnswer);
+            nextBtn.hide();
+            startTimer();
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const correctAnswer = quizData[currentQuestion].correctAnswer;
+            const resultContainer = $('#result-container');
+            const scoreContainer = $('#score');
+            const nextBtn = $('#next-btn');
+
+            if (selectedAnswer === correctAnswer) {
+                resultContainer.text("Correct!");
+                score++;
+            } else {
+                resultContainer.text("Incorrect. The correct answer is: " + correctAnswer);
             }
+
             scoreContainer.text(score);
             resultContainer.show();
             nextBtn.show();
         }
-        function nextQuestion(){
-            const resultContainer=$('#result-container');
-            resultContainer.hide();
 
-            if(currentQuestion<quizData.length-1){
+        function nextQuestion() {
+            clearInterval(timer);
+            $('#result-container').hide();
+
+            if (currentQuestion < quizData.length - 1) {
                 currentQuestion++;
                 showQuestion();
-            }else{
-                $('#quiz-container').html("<h2>Quiz Completed!</h2> <p class='final-score'>Your final score is: "+ score +"</p>");
-              }
+            } else {
+                $('#quiz-container').html("<h2>Quiz Completed!</h2> <p class='final-score'>Your final score is: " + score + "</p>");
             }
-            $(document).ready(()=>{
-                showQuestion();
+        }
 
-                $('#next-btn').click(()=>{
-                     nextQuestion();
-                });
+        $(document).ready(() => {
+            showQuestion();
+            $('#next-btn').click(() => {
+                nextQuestion();
+            });
         });
-
-</script>
+    </script>
+</body>
 </html>
