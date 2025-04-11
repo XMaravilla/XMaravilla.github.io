@@ -1,245 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Taking App</title>
-    <style>
-        body {
-            background-position: center;
-            background-size: cover;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #EBBDFF;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+  <style>
+    body {
+      background-color: #EBBDFF;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-        h1 {
-            font-size: 3.5rem;
-            color: #793391;
-        }
+    #app-container {
+      background-color: rgba(68, 137, 193, 0.3);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
 
-        #quiz-container {
-            background-color: rgba(68, 137, 193, 0.3);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-        }
+    h1 {
+      font-size: 3rem;
+      color: #793391;
+    }
 
-        #question-container {
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            font-family: 'Trebuchet MS', Arial, sans-serif;
-        }
+    button {
+      background-color: #FF5B32;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin: 10px;
+    }
 
-        #option-container {
-            padding: 25px;
-        }
+    button:hover {
+      background-color: #FF4517;
+    }
 
-        .option {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #3498db;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: background-color 0.3s ease-in-out;
-        }
+    .option {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1.1rem;
+      border-radius: 5px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        .option:hover {
-            background-color: #2980b9;
-        }
+    .option:hover {
+      background-color: #2980b9;
+    }
 
-        .option:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
+    .option:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
 
-        #score-container {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+    #result-container, #score-container {
+      margin-top: 15px;
+      font-weight: bold;
+    }
 
-        #result-container {
-            font-size: 20px;
-            font-weight: bold;
-            color: #27AE60;
-            padding: 10px 20px;
-        }
+    #timer {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
 
-        #next-btn {
-            width: 30%;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background-color: #FF5B32;
-            text-align: center;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #FFFFFF;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        #next-btn:hover {
-            background-color: #FF4517;
-        }
-
-        .final-score {
-            font-size: 1.4rem;
-            color: rgba(240, 128, 128, 1);
-            transition: font-size 0.3s ease-in-out;
-        }
-
-        .final-score:hover {
-            font-size: 2.2rem;
-        }
-    </style>
+    .final-score {
+      font-size: 1.4rem;
+      color: rgba(240, 128, 128, 1);
+      margin: 10px 0;
+    }
+  </style>
 </head>
 <body>
-    <div id="quiz-container">
+  <div id="app-container"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    const quizData = [
+      {
+        question: "What day comes after Thursday?",
+        options: ["Monday", "Tuesday", "Friday", "Sunday"],
+        correctAnswer: "Friday"
+      },
+      {
+        question: "What is 2+8?",
+        options: ["5", "7", "12", "10"],
+        correctAnswer: "10"
+      },
+      {
+        question: "What color is the sun?",
+        options: ["Yellow", "Red", "Green", "Purple"],
+        correctAnswer: "Yellow"
+      },
+      {
+        question: "Where are you?",
+        options: ["Mars", "Earth", "Venus", "Moon"],
+        correctAnswer: "Earth"
+      },
+      {
+        question: "What is the square root of 25?",
+        options: ["32", "10", "55", "5"],
+        correctAnswer: "5"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let timer;
+    let timeLeft = 15;
+
+    function showHomeScreen() {
+      $('#app-container').html(`
+        <h1>Welcome to the Quiz!</h1>
+        <button id="start-btn">Start Quiz</button>
+      `);
+
+      $('#start-btn').click(() => {
+        currentQuestion = 0;
+        score = 0;
+        showQuizUI();
+        showQuestion();
+      });
+    }
+
+    function showQuizUI() {
+      $('#app-container').html(`
         <h1>Quiz</h1>
         <div id="timer">Time Remaining: 15 seconds</div>
         <div id="question-container"></div>
         <div id="option-container"></div>
         <div id="score-container">Score: <span id="score">0</span></div>
-        <div id="result-container">Result...</div>
-        <button type="button" id="next-btn">Next Question</button>
-    </div>
+        <div id="result-container"></div>
+        <button id="next-btn">Next Question</button>
+      `);
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        const quizData = [
-            {
-                question: "What day comes after Thursday?",
-                options: ["Monday", "Tuesday", "Friday", "Sunday"],
-                correctAnswer: "Friday"
-            },
-            {
-                question: "What is 2+8?",
-                options: ["5", "7", "12", "10"],
-                correctAnswer: "10"
-            },
-            {
-                question: "What color is the sun?",
-                options: ["Yellow", "Red", "Green", "Purple"],
-                correctAnswer: "Yellow"
-            },
-            {
-                question: "Where are you?",
-                options: ["Mars", "Earth", "Venus", "Moon"],
-                correctAnswer: "Earth"
-            },
-            {
-                question: "What is the square root of 25?",
-                options: ["32", "10", "55", "5"],
-                correctAnswer: "5"
-            }
-        ];
+      $('#next-btn').click(() => {
+        nextQuestion();
+      });
+    }
 
-        let currentQuestion = 0;
-        let score = 0;
-        let timer;
-        let timeLeft = 15;
-
-        function shuffleArray(array) {
-            const shuffled = array.slice();
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
+    function startTimer() {
+      timeLeft = 15;
+      $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
+      clearInterval(timer);
+      timer = setInterval(() => {
+        timeLeft--;
+        $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          showCorrectAnswer();
         }
+      }, 1000);
+    }
 
-        function startTimer() {
-            timeLeft = 15;
-            $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
+    function showCorrectAnswer() {
+      const correct = quizData[currentQuestion].correctAnswer;
+      $('#result-container').text("Time's up! Correct answer: " + correct).show();
+      $('.option').prop("disabled", true);
+      $('#next-btn').show();
+    }
+
+    function showQuestion() {
+      const qData = quizData[currentQuestion];
+      $('#question-container').text(qData.question);
+      $('#option-container').empty();
+      $('#result-container').hide();
+      $('#next-btn').hide();
+
+      const shuffledOptions = [...qData.options].sort(() => 0.5 - Math.random());
+      shuffledOptions.forEach(opt => {
+        const btn = $('<button>')
+          .addClass('option')
+          .text(opt)
+          .click(() => {
             clearInterval(timer);
-            timer = setInterval(() => {
-                timeLeft--;
-                $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    showCorrectAnswer();
-                }
-            }, 1000);
-        }
-
-        function showCorrectAnswer() {
-            const correctAnswer = quizData[currentQuestion].correctAnswer;
-            $('#result-container').text("Time's up! Correct answer: " + correctAnswer).show();
+            checkAnswer(opt);
             $('.option').prop("disabled", true);
-            $('#next-btn').show();
-        }
+          });
+        $('#option-container').append(btn);
+      });
 
-        function showQuestion() {
-            const questionContainer = $('#question-container');
-            const optionContainer = $('#option-container');
-            const nextBtn = $('#next-btn');
+      startTimer();
+    }
 
-            questionContainer.text(quizData[currentQuestion].question);
-            optionContainer.empty();
-            shuffleArray(quizData[currentQuestion].options).forEach(option => {
-                const optionBtn = $('<button>')
-                    .text(option)
-                    .addClass('option')
-                    .click(() => {
-                        clearInterval(timer);
-                        checkAnswer(option);
-                        $('.option').prop("disabled", true);
-                    });
-                optionContainer.append(optionBtn);
-            });
+    function checkAnswer(selected) {
+      const correct = quizData[currentQuestion].correctAnswer;
+      if (selected === correct) {
+        $('#result-container').text("Correct!");
+        score++;
+      } else {
+        $('#result-container').text("Incorrect. Correct answer: " + correct);
+      }
 
-            nextBtn.hide();
-            startTimer();
-        }
+      $('#score').text(score);
+      $('#result-container').show();
+      $('#next-btn').show();
+    }
 
-        function checkAnswer(selectedAnswer) {
-            const correctAnswer = quizData[currentQuestion].correctAnswer;
-            const resultContainer = $('#result-container');
-            const scoreContainer = $('#score');
-            const nextBtn = $('#next-btn');
+    function nextQuestion() {
+      clearInterval(timer);
+      if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        showResultScreen();
+      }
+    }
 
-            if (selectedAnswer === correctAnswer) {
-                resultContainer.text("Correct!");
-                score++;
-            } else {
-                resultContainer.text("Incorrect. The correct answer is: " + correctAnswer);
-            }
+    function showResultScreen() {
+      $('#app-container').html(`
+        <h2>Quiz Completed!</h2>
+        <p class="final-score">Your final score is: ${score}</p>
+        <button id="retake-btn">Retake Quiz</button>
+        <button id="home-btn">Home</button>
+      `);
 
-            scoreContainer.text(score);
-            resultContainer.show();
-            nextBtn.show();
-        }
+      $('#retake-btn').click(() => {
+        currentQuestion = 0;
+        score = 0;
+        showQuizUI();
+        showQuestion();
+      });
 
-        function nextQuestion() {
-            clearInterval(timer);
-            $('#result-container').hide();
+      $('#home-btn').click(() => {
+        showHomeScreen();
+      });
+    }
 
-            if (currentQuestion < quizData.length - 1) {
-                currentQuestion++;
-                showQuestion();
-            } else {
-                $('#quiz-container').html("<h2>Quiz Completed!</h2> <p class='final-score'>Your final score is: " + score + "</p>");
-            }
-        }
-
-        $(document).ready(() => {
-            showQuestion();
-            $('#next-btn').click(() => {
-                nextQuestion();
-            });
-        });
-    </script>
+    // Start with home screen
+    $(document).ready(() => {
+      showHomeScreen();
+    });
+  </script>
 </body>
 </html>
