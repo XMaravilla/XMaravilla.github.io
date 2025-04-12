@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz App</title>
   <style>
-    body {      
+    body {
       background-color: #EBBDFF;
       margin: 0;
       font-family: Arial, sans-serif;
@@ -23,7 +23,6 @@
       text-align: center;
       margin-top: 20px;
       margin-bottom: 10px;
-      font-family: 'Arial', sans-serif;
     }
 
     #app-container {
@@ -37,7 +36,7 @@
     }
 
     h1 {
-      font-size: 3rem;
+      font-size: 2rem;
       color: #793391;
     }
 
@@ -54,6 +53,15 @@
 
     button:hover {
       background-color: #FF4517;
+    }
+
+    input, select {
+      padding: 10px;
+      margin: 5px;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
     .option {
@@ -100,41 +108,19 @@
   <div id="title-bar">QuizME!</div>
   <div id="app-container"></div>
 
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
   <script>
-    const quizData = [
-      {
-        question: "What day comes after Thursday?",
-        options: ["Monday", "Tuesday", "Friday", "Sunday"],
-        correctAnswer: "Friday"
-      },
-      {
-        question: "What is 2+8?",
-        options: ["5", "7", "12", "10"],
-        correctAnswer: "10"
-      },
-      {
-        question: "What color is the sun?",
-        options: ["Yellow", "Red", "Green", "Purple"],
-        correctAnswer: "Yellow"
-      },
-      {
-        question: "Where are you?",
-        options: ["Mars", "Earth", "Venus", "Moon"],
-        correctAnswer: "Earth"
-      },
-      {
-        question: "What is the square root of 25?",
-        options: ["32", "10", "55", "5"],
-        correctAnswer: "5"
-      }
+    const sampleQuiz = [
+      { question: "What day comes after Thursday?", options: ["Monday", "Tuesday", "Friday", "Sunday"], correctAnswer: "Friday" },
+      { question: "What is 2+8?", options: ["5", "7", "12", "10"], correctAnswer: "10" },
+      { question: "What color is the sun?", options: ["Yellow", "Red", "Green", "Purple"], correctAnswer: "Yellow" },
+      { question: "Where are you?", options: ["Mars", "Earth", "Venus", "Moon"], correctAnswer: "Earth" },
+      { question: "What is the square root of 25?", options: ["32", "10", "55", "5"], correctAnswer: "5" }
     ];
 
+    let quizData = []; // Will be either sampleQuiz or user-defined
     let currentQuestion = 0;
     let score = 0;
     let timer;
@@ -142,16 +128,84 @@
 
     function showHomeScreen() {
       $('#app-container').html(`
-        <h1>Welcome to the Quiz!</h1>
-        <button id="start-btn">Start Quiz</button>
+        <h1>Choose a Quiz</h1>
+        <button id="sample-btn">Take Sample Quiz</button>
+        <button id="create-btn">Create Your Own Quiz</button>
       `);
 
-      $('#start-btn').click(() => {
-        currentQuestion = 0;
-        score = 0;
-        showQuizUI();
-        showQuestion();
+      $('#sample-btn').click(() => {
+        quizData = [...sampleQuiz]; // Reset to sample
+        startQuiz();
       });
+
+      $('#create-btn').click(() => {
+        showCreateQuizForm();
+      });
+    }
+
+    function showCreateQuizForm() {
+      $('#app-container').html(`
+        <h1>Create Your Quiz</h1>
+        <form id="quiz-form">
+          <input type="text" placeholder="Enter Question" id="new-question" required />
+          <input type="text" placeholder="Option 1" id="opt1" required />
+          <input type="text" placeholder="Option 2" id="opt2" required />
+          <input type="text" placeholder="Option 3" id="opt3" required />
+          <input type="text" placeholder="Option 4" id="opt4" required />
+          <select id="correct-option">
+            <option value="">Select Correct Answer</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+          </select>
+          <button type="submit">Add Question</button>
+        </form>
+        <button id="start-custom-quiz">Start Quiz</button>
+        <button id="home-btn">Home</button>
+      `);
+
+      quizData = [];
+
+      $('#quiz-form').on('submit', function (e) {
+        e.preventDefault();
+
+        const question = $('#new-question').val();
+        const options = [$('#opt1').val(), $('#opt2').val(), $('#opt3').val(), $('#opt4').val()];
+        const correctIndex = $('#correct-option').val();
+
+        if (!correctIndex) {
+          alert("Please select the correct answer.");
+          return;
+        }
+
+        quizData.push({
+          question: question,
+          options: options,
+          correctAnswer: options[parseInt(correctIndex) - 1]
+        });
+
+        // Clear form
+        this.reset();
+        alert("Question added!");
+      });
+
+      $('#start-custom-quiz').click(() => {
+        if (quizData.length === 0) {
+          alert("Please add at least one question.");
+          return;
+        }
+        startQuiz();
+      });
+
+      $('#home-btn').click(() => showHomeScreen());
+    }
+
+    function startQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      showQuizUI();
+      showQuestion();
     }
 
     function showQuizUI() {
@@ -251,10 +305,7 @@
       }
 
       $('#retake-btn').click(() => {
-        currentQuestion = 0;
-        score = 0;
-        showQuizUI();
-        showQuestion();
+        startQuiz();
       });
 
       $('#home-btn').click(() => {
@@ -286,6 +337,7 @@
       })();
     }
 
+    // Initialize the home screen when page loads
     $(document).ready(() => {
       showHomeScreen();
     });
