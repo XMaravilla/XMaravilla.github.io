@@ -120,7 +120,7 @@
       { question: "What is the square root of 25?", options: ["32", "10", "55", "5"], correctAnswer: "5" }
     ];
 
-    let quizData = []; // Will be either sampleQuiz or user-defined
+    let quizData = [];
     let currentQuestion = 0;
     let score = 0;
     let timer;
@@ -134,7 +134,7 @@
       `);
 
       $('#sample-btn').click(() => {
-        quizData = [...sampleQuiz]; // Reset to sample
+        quizData = [...sampleQuiz];
         startQuiz();
       });
 
@@ -161,6 +161,9 @@
           </select>
           <button type="submit">Add Question</button>
         </form>
+
+        <div id="question-list"></div>
+
         <button id="start-custom-quiz">Start Quiz</button>
         <button id="home-btn">Home</button>
       `);
@@ -185,9 +188,9 @@
           correctAnswer: options[parseInt(correctIndex) - 1]
         });
 
-        // Clear form
         this.reset();
         alert("Question added!");
+        renderQuestionList();
       });
 
       $('#start-custom-quiz').click(() => {
@@ -199,6 +202,46 @@
       });
 
       $('#home-btn').click(() => showHomeScreen());
+    }
+
+    function renderQuestionList() {
+      const listContainer = $('#question-list');
+      listContainer.empty();
+
+      quizData.forEach((q, index) => {
+        listContainer.append(`
+          <div style="background:#fff; padding:10px; margin:10px 0; border-radius:5px;">
+            <strong>Q${index + 1}: ${q.question}</strong><br/>
+            Options: ${q.options.join(', ')}<br/>
+            Answer: ${q.correctAnswer}<br/>
+            <button onclick="editQuestion(${index})">Edit</button>
+            <button onclick="deleteQuestion(${index})">Delete</button>
+          </div>
+        `);
+      });
+    }
+
+    function editQuestion(index) {
+      const q = quizData[index];
+
+      $('#new-question').val(q.question);
+      $('#opt1').val(q.options[0]);
+      $('#opt2').val(q.options[1]);
+      $('#opt3').val(q.options[2]);
+      $('#opt4').val(q.options[3]);
+
+      const correctIndex = q.options.findIndex(opt => opt === q.correctAnswer);
+      $('#correct-option').val(correctIndex + 1);
+
+      quizData.splice(index, 1);
+      renderQuestionList();
+    }
+
+    function deleteQuestion(index) {
+      if (confirm("Are you sure you want to delete this question?")) {
+        quizData.splice(index, 1);
+        renderQuestionList();
+      }
     }
 
     function startQuiz() {
@@ -337,7 +380,6 @@
       })();
     }
 
-    // Initialize the home screen when page loads
     $(document).ready(() => {
       showHomeScreen();
     });
