@@ -1,111 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quiz App</title>
-  <style>
-    body {
-      background-color: #EBBDFF;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quiz App</title>
+    <style>
+     body{
+        background-color: rgb(188, 209, 240);
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+     }
+
+     #title-bar {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color:darkslategrey;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+     }
+
+     #app-container {
+        background-color: rgba(68,137,193,0.3);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+     }
+
+     h1 {
+        font-size: 2rem;
+        color: darkslategrey;
+     }
+
+     button {
+        background-color: #bf7dcc;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin: 10px;
+     }
+
+        button:hover {
+            background-color: #45a049;
     }
 
-    #title-bar {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #4A1C6F;
-      text-align: center;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-
-    #app-container {
-      background-color: rgba(68, 137, 193, 0.3);
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-      padding: 30px;
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2rem;
-      color: #793391;
-    }
-
-    button {
-      background-color: #FF5B32;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      margin: 10px;
-    }
-
-    button:hover {
-      background-color: #FF4517;
-    }
-
-    input, select {
-      padding: 10px;
-      margin: 5px;
-      width: 100%;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
+    input, select{
+        padding: 10px;
+        margin: 5px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
     }
 
     .option {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 1.1rem;
-      border-radius: 5px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s;
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 1.1rem;
+        border-radius: 5px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+        border: none;
+        transition: background-color 0.3s ease;
     }
 
     .option:hover {
-      background-color: #2980b9;
+        background-color: #2980b9;
     }
 
     .option:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .option.correct {
+        background: #3fee4d;
+        color: #222;
+    }
+
+    .option.incorrect {
+        background: #D20103;
+        color: #222;
     }
 
     #result-container, #score-container {
-      margin-top: 15px;
-      font-weight: bold;
+        margin-top: 15px;
+        font-weight: bold;
     }
 
     #timer {
-      margin-bottom: 10px;
-      font-weight: bold;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    #timer.danger {
+        color: red;
+        font-weight: bold;
     }
 
     .final-score {
-      font-size: 1.4rem;
-      color: rgba(240, 128, 128, 1);
-      margin: 10px 0;
+        font-size: 1.4rem;
+        color: rgba(240,128,128,1);
+        margin: 10px 0;
     }
-  </style>
+    </style>
 </head>
 <body>
-  <div id="title-bar">QuizME!</div>
+    <div id="title-bar">QuizME!</div>
   <div id="app-container"></div>
 
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -127,79 +143,266 @@
     let timeLeft = 15;
 
     function showHomeScreen() {
-      $('#app-container').html(`
-        <h1>Choose a Quiz</h1>
-        <button id="sample-btn">Take Sample Quiz</button>
-        <button id="create-btn">Create Your Own Quiz</button>
-      `);
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  const welcomeMessage = loggedInUser ? `<p>Welcome, ${loggedInUser}!</p>` : '';
 
-      $('#sample-btn').click(() => {
-        quizData = [...sampleQuiz]; // Reset to sample
-        startQuiz();
-      });
+  $('#app-container').html(`
+    ${welcomeMessage}
+    <h1>Welcome to QuizME!</h1>
+    <button id="sample-btn">Take Sample Quiz</button>
+    ${loggedInUser ? '<button id="create-btn">Create Your Own Quiz</button>' : ''}
+    ${loggedInUser ? '<button id="view-quizzes-btn">View Saved Quizzes</button>' : ''}
+    ${loggedInUser ? '<button id="edit-profile-btn">Edit Profile</button>' : ''}
+    ${!loggedInUser ? '<button id="create-account-btn">Create Account</button>' : ''}
+    ${!loggedInUser ? '<button id="Login-btn">Login</button>' : ''}
+    ${loggedInUser ? '<button id="Logout-btn">Logout</button>' : ''}
+  `);
 
-      $('#create-btn').click(() => {
-        showCreateQuizForm();
-      });
+  $('#sample-btn').click(() => {
+    quizData = [...sampleQuiz];
+    startQuiz();
+  });
+
+  if (loggedInUser) {
+    $('#create-btn').click(() => {
+      showCreateQuizForm();
+    });
+
+    $('#view-quizzes-btn').click(() => {
+      showSavedQuizzes();
+    });
+
+    $('#edit-profile-btn').click(() => {
+      showEditProfileForm();
+    });
+
+    $('#Logout-btn').click(() => {
+      logoutUser();
+    });
+  }
+
+  if (!loggedInUser) {
+    $('#create-account-btn').click(() => {
+      showCreateAccountForm();
+    });
+
+    $('#Login-btn').click(() => {
+      showLoginForm();
+    });
+  }
+}
+
+    function showLoginForm() {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            alert('You are already logged in as ${loggedInUser}.');
+            showGomeScreen();
+            return;
+        }
+
+  $('#app-container').html(`
+    <h1>Login</h1>
+    <form id="login-form">
+      <input type="text" id="login-username" placeholder="Enter Username" required />
+      <input type="password" id="login-password" placeholder="Enter Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <button id="home-btn">Home</button>
+  `);
+
+  $('#login-form').on('submit', function (e) {
+    e.preventDefault();
+
+    const username = $('#login-username').val();
+    const password = $('#login-password').val();
+
+    // Retrieve accounts from localStorage
+    const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+
+    // Validate credentials
+    const account = accounts.find(acc => acc.username === username && acc.password === password);
+    if (account) {
+      alert("Login successful!");
+      localStorage.setItem('loggedInUser', username); // Store the logged-in user
+      showHomeScreen(); // Redirect to home screen
+    } else {
+      alert("Invalid username or password!");
     }
+  });
 
-    function showCreateQuizForm() {
-      $('#app-container').html(`
-        <h1>Create Your Quiz</h1>
-        <form id="quiz-form">
-          <input type="text" placeholder="Enter Question" id="new-question" required />
-          <input type="text" placeholder="Option 1" id="opt1" required />
-          <input type="text" placeholder="Option 2" id="opt2" required />
-          <input type="text" placeholder="Option 3" id="opt3" required />
-          <input type="text" placeholder="Option 4" id="opt4" required />
-          <select id="correct-option">
-            <option value="">Select Correct Answer</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-          </select>
-          <button type="submit">Add Question</button>
+  $('#home-btn').click(() => showHomeScreen());
+}
+
+    function showCreateAccountForm() {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            alert('You are already logged in as ${loggedInUser}.');
+            showHomeScreen();
+            return;
+        }
+
+        $('#app-container').html(`
+        <h1>Create Account</h1>
+        <form id="create-account-form">
+            <input type="text" id="username" placeholder="Enter Username" required />
+            <input type="password" id="password" placeholder="Enter Password" required />
+            <input type="password" id="confirm-password" placeholder="Confirm Password" required />
+            <button type="submit">Create Account</button>
         </form>
-        <button id="start-custom-quiz">Start Quiz</button>
         <button id="home-btn">Home</button>
       `);
 
-      quizData = [];
+      $('#create-account-form').on('submit', function (e) {
+    e.preventDefault();
 
-      $('#quiz-form').on('submit', function (e) {
-        e.preventDefault();
+    const username = $('#username').val();
+    const password = $('#password').val();
+    const confirmPassword = $('#confirm-password').val();
 
-        const question = $('#new-question').val();
-        const options = [$('#opt1').val(), $('#opt2').val(), $('#opt3').val(), $('#opt4').val()];
-        const correctIndex = $('#correct-option').val();
-
-        if (!correctIndex) {
-          alert("Please select the correct answer.");
-          return;
-        }
-
-        quizData.push({
-          question: question,
-          options: options,
-          correctAnswer: options[parseInt(correctIndex) - 1]
-        });
-
-        // Clear form
-        this.reset();
-        alert("Question added!");
-      });
-
-      $('#start-custom-quiz').click(() => {
-        if (quizData.length === 0) {
-          alert("Please add at least one question.");
-          return;
-        }
-        startQuiz();
-      });
-
-      $('#home-btn').click(() => showHomeScreen());
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
     }
+
+    // Check if username already exists
+    const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+    if (accounts.some(account => account.username === username)) {
+      alert("Username already exists!");
+      return;
+    }
+
+    // Save account to localStorage
+    accounts.push({ username, password });
+    localStorage.setItem('accounts', JSON.stringify(accounts));
+
+    alert("Account created successfully!");
+    showHomeScreen();
+});
+
+$('#home-btn').click(() => showHomeScreen());
+
+}
+
+
+    function showCreateQuizForm() {
+  $('#app-container').html(`
+    <h1>Create Your Quiz</h1>
+    <form id="quiz-form">
+      <input type="text" placeholder="Enter Question" id="new-question" required />
+      <input type="text" placeholder="Option 1" id="opt1" required />
+      <input type="text" placeholder="Option 2" id="opt2" required />
+      <input type="text" placeholder="Option 3" id="opt3" required />
+      <input type="text" placeholder="Option 4" id="opt4" required />
+      <select id="correct-option">
+        <option value="">Select Correct Answer</option>
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+      </select>
+      <button type="submit">Add Question</button>
+    </form>
+    <button id="save-quiz-btn">Save Quiz</button>
+    <button id="home-btn">Home</button>
+  `);
+
+  quizData = [];
+
+  $('#quiz-form').on('submit', function (e) {
+    e.preventDefault();
+
+    const question = $('#new-question').val();
+    const options = [$('#opt1').val(), $('#opt2').val(), $('#opt3').val(), $('#opt4').val()];
+    const correctIndex = $('#correct-option').val();
+
+    if (!correctIndex) {
+      alert("Please select the correct answer.");
+      return;
+    }
+
+    quizData.push({
+      question: question,
+      options: options,
+      correctAnswer: options[parseInt(correctIndex) - 1]
+    });
+
+    this.reset();
+    alert("Question added!");
+  });
+
+  $('#save-quiz-btn').click(() => {
+    if (quizData.length === 0) {
+        alert("Please add at least one question before saving.");
+        return;
+    }
+
+    const quizTitle = prompt("Enter a title for your quiz:");
+    if (!quizTitle) {
+        alert("Quiz title is required.");
+        return;
+    }
+
+    // Save quiz data to localStorage
+    const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+    savedQuizzes.push({ title: quizTitle, questions: quizData }); // Removed scores array
+    localStorage.setItem('savedQuizzes', JSON.stringify(savedQuizzes));
+
+    alert("Quiz saved successfully!");
+    showHomeScreen();
+});
+
+  $('#home-btn').click(() => showHomeScreen());
+}
+
+    function showSavedQuizzes() {
+    const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+
+    if (savedQuizzes.length === 0) {
+        alert("No saved quizzes found.");
+        showHomeScreen();
+        return;
+    }
+
+    // Display the saved quizzes
+    $('#app-container').html(`
+        <h1>Saved Quizzes</h1>
+        <ul id="quiz-list"></ul>
+        <button id="home-btn">Home</button>
+    `);
+
+    // Add each quiz to the list
+    savedQuizzes.forEach((quiz, index) => {
+        const quizItem = $('<li>')
+            .text(quiz.title)
+            .append(
+                $('<button>')
+                    .text('Start Quiz')
+                    .click(() => {
+                        quizData = quiz.questions; // Load the quiz questions
+                        startQuiz(); // Start the quiz
+                    })
+            )
+            .append(
+                $('<button>')
+                    .text('Edit')
+                    .click(() => {
+                        editQuiz(index);
+                    })
+            )
+            .append(
+                $('<button>')
+                    .text('Delete')
+                    .click(() => {
+                        deleteQuiz(index);
+                    })
+            );
+        $('#quiz-list').append(quizItem);
+    });
+
+    // Add functionality to the Home button
+    $('#home-btn').click(() => showHomeScreen());
+}
 
     function startQuiz() {
       currentQuestion = 0;
@@ -226,20 +429,30 @@
 
     function startTimer() {
       timeLeft = 15;
-      $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
+      $('#timer').text(`Time Remaining: ${timeLeft} seconds`).removeClass('danger');
       clearInterval(timer);
       timer = setInterval(() => {
         timeLeft--;
         $('#timer').text(`Time Remaining: ${timeLeft} seconds`);
+        
         if (timeLeft <= 0) {
           clearInterval(timer);
           showCorrectAnswer();
+        } else if (timeLeft <= 5) {
+            $('#timer').addClass('danger');
         }
       }, 1000);
     }
 
     function showCorrectAnswer() {
       const correct = quizData[currentQuestion].correctAnswer;
+
+      //Highlight the correct answer
+      $('.option').each(function() {
+        if ($(this).text() === correct) {
+            $(this).addClass('correct'); //Add the 'correct' class to the correct option
+        }
+      });
       $('#result-container').text("Time's up! Correct answer: " + correct).show();
       $('.option').prop("disabled", true);
       $('#next-btn').show();
@@ -270,12 +483,27 @@
 
     function checkAnswer(selected) {
       const correct = quizData[currentQuestion].correctAnswer;
+
       if (selected === correct) {
         $('#result-container').text("Correct!");
         score++;
       } else {
         $('#result-container').text("Incorrect. Correct answer: " + correct);
+
+        // Highlight the incorrect answer
+        $('.option').each(function () {
+          if ($(this).text() === selected) {
+            $(this).addClass('incorrect'); // Add the 'incorrect' class to the selected option
+          }
+        });
       }
+
+      // Highlight the correct answer
+      $('.option').each(function () {
+        if ($(this).text() === correct) {
+          $(this).addClass('correct'); // Add the 'correct' class to the correct option
+        }
+      });
 
       $('#score').text(score);
       $('#result-container').show();
@@ -293,25 +521,33 @@
     }
 
     function showResultScreen() {
-      $('#app-container').html(`
+    $('#app-container').html(`
         <h2>Quiz Completed!</h2>
         <p class="final-score">Your final score is: ${score} / ${quizData.length}</p>
         <button id="retake-btn">Retake Quiz</button>
         <button id="home-btn">Home</button>
-      `);
+    `);
 
-      if (score === quizData.length) {
+    if (score === quizData.length) {
         launchConfetti();
-      }
-
-      $('#retake-btn').click(() => {
-        startQuiz();
-      });
-
-      $('#home-btn').click(() => {
-        showHomeScreen();
-      });
     }
+
+    // Save the score to the corresponding quiz
+    const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+    const quizIndex = savedQuizzes.findIndex(quiz => quiz.questions === quizData);
+    if (quizIndex !== -1) {
+        savedQuizzes[quizIndex].scores.push(score); // Add the score to the scores array
+        localStorage.setItem('savedQuizzes', JSON.stringify(savedQuizzes));
+    }
+
+    $('#retake-btn').click(() => {
+        startQuiz();
+    });
+
+    $('#home-btn').click(() => {
+        showHomeScreen();
+    });
+}
 
     function launchConfetti() {
       const duration = 3 * 1000;
@@ -337,10 +573,170 @@
       })();
     }
 
+    function logoutUser() {
+      localStorage.removeItem('loggedInUser'); // Remove the logged-in user from localStorage
+      alert('You have been logged out.');
+      showHomeScreen(); // Redirect to the home screen
+    }
+
+    function showEditProfileForm() {
+  const loggedInUser = localStorage.getItem('loggedInUser');
+  const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+  const userAccount = accounts.find(acc => acc.username === loggedInUser);
+
+  if (!userAccount) {
+    alert("Error: User not found.");
+    showHomeScreen();
+    return;
+  }
+
+  $('#app-container').html(`
+    <h1>Edit Profile</h1>
+    <form id="edit-profile-form">
+      <input type="text" id="new-username" placeholder="New Username" value="${userAccount.username}" required />
+      <input type="password" id="new-password" placeholder="New Password" required />
+      <input type="password" id="confirm-new-password" placeholder="Confirm New Password" required />
+      <button type="submit">Save Changes</button>
+    </form>
+    <button id="home-btn">Home</button>
+  `);
+
+  $('#edit-profile-form').on('submit', function (e) {
+    e.preventDefault();
+
+    const newUsername = $('#new-username').val();
+    const newPassword = $('#new-password').val();
+    const confirmNewPassword = $('#confirm-new-password').val();
+
+    // Validate passwords match
+    if (newPassword !== confirmNewPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    // Check if the new username already exists (excluding the current user)
+    if (accounts.some(acc => acc.username === newUsername && acc.username !== loggedInUser)) {
+      alert("Username already exists!");
+      return;
+    }
+
+    // Update the user's account
+    userAccount.username = newUsername;
+    userAccount.password = newPassword;
+
+    // Save the updated accounts back to localStorage
+    localStorage.setItem('accounts', JSON.stringify(accounts));
+    localStorage.setItem('loggedInUser', newUsername); // Update the logged-in username
+
+    alert("Profile updated successfully!");
+    showHomeScreen();
+  });
+
+  $('#home-btn').click(() => showHomeScreen());
+}
+
+    function editQuiz(index) {
+    const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+    const quiz = savedQuizzes[index];
+
+    $('#app-container').html(`
+        <h1>Edit Quiz</h1>
+        <form id="edit-quiz-form">
+            <input type="text" id="edit-quiz-title" value="${quiz.title}" required />
+            <div id="edit-questions-container"></div>
+            <button type="button" id="add-question-btn">Add Question</button>
+            <button type="submit">Save Changes</button>
+        </form>
+        <button id="home-btn">Home</button>
+    `);
+
+    // Populate existing questions
+    quiz.questions.forEach((question, qIndex) => {
+        $('#edit-questions-container').append(`
+            <div class="question-item">
+                <input type="text" class="edit-question" value="${question.question}" required />
+                <input type="text" class="edit-option" value="${question.options[0]}" required />
+                <input type="text" class="edit-option" value="${question.options[1]}" required />
+                <input type="text" class="edit-option" value="${question.options[2]}" required />
+                <input type="text" class="edit-option" value="${question.options[3]}" required />
+                <select class="edit-correct-option">
+                    <option value="1" ${question.correctAnswer === question.options[0] ? 'selected' : ''}>Option 1</option>
+                    <option value="2" ${question.correctAnswer === question.options[1] ? 'selected' : ''}>Option 2</option>
+                    <option value="3" ${question.correctAnswer === question.options[2] ? 'selected' : ''}>Option 3</option>
+                    <option value="4" ${question.correctAnswer === question.options[3] ? 'selected' : ''}>Option 4</option>
+                </select>
+            </div>
+        `);
+    });
+
+    // Add new question functionality
+    $('#add-question-btn').click(() => {
+        $('#edit-questions-container').append(`
+            <div class="question-item">
+                <input type="text" class="edit-question" placeholder="Enter Question" required />
+                <input type="text" class="edit-option" placeholder="Option 1" required />
+                <input type="text" class="edit-option" placeholder="Option 2" required />
+                <input type="text" class="edit-option" placeholder="Option 3" required />
+                <input type="text" class="edit-option" placeholder="Option 4" required />
+                <select class="edit-correct-option">
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <option value="4">Option 4</option>
+                </select>
+            </div>
+        `);
+    });
+
+    // Save changes
+    $('#edit-quiz-form').on('submit', function (e) {
+        e.preventDefault();
+
+        const updatedTitle = $('#edit-quiz-title').val();
+        const updatedQuestions = [];
+
+        $('.question-item').each(function () {
+            const questionText = $(this).find('.edit-question').val();
+            const options = $(this).find('.edit-option').map(function () {
+                return $(this).val();
+            }).get();
+            const correctIndex = $(this).find('.edit-correct-option').val();
+
+            updatedQuestions.push({
+                question: questionText,
+                options: options,
+                correctAnswer: options[correctIndex - 1]
+            });
+        });
+
+        // Update the quiz
+        quiz.title = updatedTitle;
+        quiz.questions = updatedQuestions;
+
+        // Save to localStorage
+        savedQuizzes[index] = quiz;
+        localStorage.setItem('savedQuizzes', JSON.stringify(savedQuizzes));
+
+        alert("Quiz updated successfully!");
+        showSavedQuizzes();
+    });
+
+    $('#home-btn').click(() => showHomeScreen());
+}
+
+    function deleteQuiz(index) {
+    const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+    savedQuizzes.splice(index, 1); // Remove the quiz at the specified index
+    localStorage.setItem('savedQuizzes', JSON.stringify(savedQuizzes));
+
+    alert("Quiz deleted successfully!");
+    showSavedQuizzes();
+}
+
     // Initialize the home screen when page loads
     $(document).ready(() => {
       showHomeScreen();
     });
-  </script>
-</body>
+     </script>
+</body>    
 </html>
